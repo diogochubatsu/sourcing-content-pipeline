@@ -4,7 +4,11 @@ Sistema de captura de trafego de sourcing da China/Japao com arquitetura medalio
 
 ## Visao Geral
 
-Este projeto implementa um pipeline de dados que captura precos, fornecedores e informacoes de mercado de multiplas fontes (1688, Alibaba, Rakuten, Mercado Livre, Amazon) em multiplos idiomas, e gera conteudo automaticamente para sites de nicho de importacao.
+Este projeto implementa um pipeline de dados **hibrido** que combina:
+1. **Scraping de produtos** — precos, MOQ, fornecedores de 1688, Alibaba, Amazon, ML
+2. **Conteudo de reviews/analises** — curadoria, comparativos, "best of", analises de mercado
+
+O Bronze agrega dados de **multiplas fontes e idiomas**. O Silver gera conteudo automaticamente. O Gold entrega produtos premium.
 
 ## Arquitetura Medalion
 
@@ -27,21 +31,36 @@ Este projeto implementa um pipeline de dados que captura precos, fornecedores e 
    └─────────────────┘
 ```
 
-### Bronze (Datalake)
-Dados brutos de multiplas fontes e idiomas:
+### Bronze (Datalake) — Hibrido
+Dados brutos de **duas categorias de fontes**:
+
+**Fontes de Produtos (scraping):**
 - **1688.com** (chines) — Precos, MOQ, fornecedores
 - **Alibaba.com** (ingles/chines) — Precos, MOQ, fornecedores
 - **Rakuten/Rakumart** (japones) — Precos, fornecedores
 - **Mercado Livre** (portugues/espanhol) — Precos, vendedores
 - **Amazon** (ingles/PT/ES) — Precos, BSR, reviews
-- **Google Trends** (multilingue) — Volume de busca
 
-### Silver (Templates)
-Artigos gerados automaticamente a partir do Bronze:
+**Fontes de Reviews/Analises (curadoria):**
+- **Amazon Reviews** — Opinoes de compradores
+- **Reddit** — Discussoes de comunidades (r/FulfillmentByAmazon, r/1688)
+- **YouTube** — Reviews em video
+- **Blogs de nicho** — Analises especializadas
+- **Google Trends** — Volume de busca e tendencias
+
+### Silver (Templates) — Hibrido
+Artigos gerados a partir do Bronze, em **duas categorias**:
+
+**Conteudo de Dados (scraping):**
 - Fichas de Produto (preco + MOQ + fornecedor)
-- Comparacoes (1688 vs Alibaba vs Amazon vs ML)
+- Comparacoes de preco (1688 vs Alibaba vs Amazon)
 - Calculos de Custo de Importacao
-- Rankings de Fornecedores
+
+**Conteudo de Reviews/Analises (curadoria):**
+- "Best of" lists (Top 10 produtos por categoria)
+- Comparativos editorial (qualidade vs preco)
+- Analises de tendencias
+- Guias de compra baseados em reviews
 
 ### Gold (Premium)
 Produtos de alto valor:
@@ -72,13 +91,16 @@ sourcing-content-pipeline/
 │   ├── 05-fontes-dados.md
 │   ├── 06-monetizacao.md
 │   ├── 07-cronograma.md
-│   └── 08-concorrencia.md
+│   ├── 08-concorrencia.md
+│   └── 09-comparacao-abordagens.md   ← NOVO
 ├── templates/
 │   ├── bronze/
 │   │   └── schema.csv
 │   ├── silver/
 │   │   ├── ficha-produto.md
-│   │   └── comparacao.md
+│   │   ├── comparacao.md
+│   │   ├── best-of-list.md           ← NOVO
+│   │   └── analise-mercado.md        ← NOVO
 │   └── gold/
 │       └── relatorio-semanal.md
 └── data/
